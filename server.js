@@ -16,6 +16,18 @@ app.get('/secure', (req, res) => {
     res.send('HTTPS Quest Tracker');
 });
 
+app.get('/habits', (req, res) => {
+    res.send('Daily, Weekly, Monthly, and Yearly Habits');
+});
+
+app.get('/goals', (req, res) => {
+    res.send('Outline your goals');
+});
+
+app.get('/profile', (req, res) => {
+    res.send('Personal Profile');
+});
+
 const hstsOptions = {
     maxAge: 31536000, 
     includeSubDomains: true, 
