@@ -3,13 +3,14 @@ const https = require('https');
 const fs = require('fs');
 const http = require('http');
 const hsts = require('hsts');
+const path = require('path');
 
 const app = express();
 const PORT_HTTP = 3000;
 const PORT_HTTPS = 3443;
 
 app.get('/', (req, res) => {
-    res.send('HTTP Quest Tracker');
+    res.sendFile(path.join(__dirname,'/public/index.html'));
 });
 
 app.get('/secure', (req, res) => {
@@ -17,15 +18,15 @@ app.get('/secure', (req, res) => {
 });
 
 app.get('/habits', (req, res) => {
-    res.send('Daily, Weekly, Monthly, and Yearly Habits');
+    res.sendFile(path.join(__dirname,'public/habits.html'));
 });
 
 app.get('/goals', (req, res) => {
-    res.send('Outline your goals');
+    res.sendFile(path.join(__dirname,'public/goals.html'));
 });
 
 app.get('/profile', (req, res) => {
-    res.send('Personal Profile');
+    res.sendFile(path.join(__dirname,'public/profile.html'));
 });
 
 const hstsOptions = {
