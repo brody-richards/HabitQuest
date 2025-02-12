@@ -9,7 +9,24 @@ const app = express();
 const PORT_HTTP = 3000;
 const PORT_HTTPS = 3443;
 
+const helmet = require('helmet');
+const port = process.env.PORT || 3000;
+
+app.use(helmet());
+
+app.use('/static', express.static('public', {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.css')) {
+            res.set('Cache-Control', 'max-age=86400');
+        }
+        if (path.endsWith('.jpg') || path.endsWith('.png')) {
+            res.set('Cache-Control', 'max-age=2592000');
+        }
+    }
+}));
+
 app.get('/', (req, res) => {
+    res.set('Cache-Control', 'max-age=300'); // cache for 5 minutes
     res.sendFile(path.join(__dirname,'/public/index.html'));
 });
 
@@ -18,15 +35,23 @@ app.get('/secure', (req, res) => {
 });
 
 app.get('/habits', (req, res) => {
+    res.set('Cache-Control', 'max-age=60'); // cache for 1 minute
     res.sendFile(path.join(__dirname,'public/habits.html'));
 });
 
 app.get('/goals', (req, res) => {
+    res.set('Cache-Control', 'max-age=900'); // cache for 15 minutes
     res.sendFile(path.join(__dirname,'public/goals.html'));
 });
 
 app.get('/profile', (req, res) => {
+    res.set('Cache-Control', 'max-age=3600'); // cache for 1 hour
     res.sendFile(path.join(__dirname,'public/profile.html'));
+});
+
+app.get('/reflection', (req, res) => {
+    res.set('Cache-Control', 'max-age=3600'); // cache for 1 hour
+    res.sendFile(path.join(__dirname,'public/reflection.html'));
 });
 
 const hstsOptions = {
