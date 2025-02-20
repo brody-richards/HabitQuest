@@ -12,7 +12,16 @@ const PORT_HTTPS = 3443;
 const helmet = require('helmet');
 const port = process.env.PORT || 3000;
 
-app.use(helmet());
+app.use(
+    helmet({
+        xFrameOptions: { action: "deny" },
+        strictTransportSecurity: {
+            maxAge: 31556952, // 1 year
+            preload: true
+        }
+    })
+);
+
 
 app.use('/static', express.static('public', {
     setHeaders: (res, path) => {
@@ -26,32 +35,38 @@ app.use('/static', express.static('public', {
 }));
 
 app.get('/', (req, res) => {
-    res.set('Cache-Control', 'max-age=300'); // cache for 5 minutes
+    res.set('Cache-Control', 'max-age=300, public'); // cache for 5 minutes
     res.sendFile(path.join(__dirname,'/public/index.html'));
 });
 
 app.get('/secure', (req, res) => {
+    res.set('Cache-Control', 'no-store, no cache, private');
     res.send('HTTPS Quest Tracker');
 });
 
 app.get('/habits', (req, res) => {
-    res.set('Cache-Control', 'max-age=60'); // cache for 1 minute
+    res.set('Cache-Control', 'max-age=60, public'); // cache for 1 minute
     res.sendFile(path.join(__dirname,'public/habits.html'));
 });
 
 app.get('/goals', (req, res) => {
-    res.set('Cache-Control', 'max-age=900'); // cache for 15 minutes
+    res.set('Cache-Control', 'max-age=900, public'); // cache for 15 minutes
     res.sendFile(path.join(__dirname,'public/goals.html'));
 });
 
 app.get('/profile', (req, res) => {
-    res.set('Cache-Control', 'max-age=3600'); // cache for 1 hour
+    res.set('Cache-Control', 'max-age=3600, private'); // cache for 1 hour
     res.sendFile(path.join(__dirname,'public/profile.html'));
 });
 
-app.get('/reflection', (req, res) => {
-    res.set('Cache-Control', 'max-age=3600'); // cache for 1 hour
-    res.sendFile(path.join(__dirname,'public/reflection.html'));
+app.get('/posts', (req, res) => {
+    res.set('Cache-Control', 'max-age=300, public, stale-while-revalidate=86400'); // cache for 5 minutes
+    res.sendFile(path.join(__dirname,'public/posts.html'));
+});
+
+app.get('/posts/:id', (req, res) => {
+    res.set('Cache-Control', 'max-age=300, public'); // cache for 5 minutes
+    res.sendFile(path.join(__dirname,'public/posts.html'));
 });
 
 const hstsOptions = {
@@ -78,3 +93,5 @@ const httpsServer = https.createServer(options, (req, res) => {
 httpsServer.listen(PORT_HTTPS, () => {
     console.log(`HTTPS Server running at https://localhost:${PORT_HTTPS}`);
 });
+
+console.log(`PORT_HTTP is set to: ${PORT_HTTP}`);
