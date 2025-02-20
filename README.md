@@ -33,6 +33,8 @@ By default, the X-Frame-Options header is set to the value of 'sameorigin'. From
 
 The Strict-Transport-Security header is automatically set to 'max-age=15552000; includeSubDomains;. From research, I learned this header tells the browser to use HTTPS over HTTP, as the former is much more secure. I changed the max-year to a value of 1 year, ensuring security over a longer period. I also changed the preload value to be true, ensuring that a users browser always attempts to preload from the HTTPS server on repeated visits. 
 
+For all other security headers, I will use the default options set up when installing Helmet. 
+
 The most challenging part of setting up HTTPS and Helmet was understanding all the header options, as well as the rational behind the default settings. In our lab we implemented Helmet, but did not focus on modifying specific headers. This assignment was a valuable learning experience in understanding how these headers contribute to server security. 
 
 
